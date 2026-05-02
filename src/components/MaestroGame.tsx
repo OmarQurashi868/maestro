@@ -32,6 +32,7 @@ export function MaestroGame() {
   const [attemptCount, setAttemptCount] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [lockedPositions, setLockedPositions] = useState<Set<number>>(new Set());
   const synthRef = useRef<Tone.PolySynth<Tone.Synth> | null>(null);
 
   // Initialize Tone.js and start new game
@@ -60,6 +61,7 @@ export function MaestroGame() {
       setAttemptCount(0);
       setGameOver(false);
       setIsCorrect(false);
+      setLockedPositions(new Set());
     };
 
     initGame();
@@ -127,6 +129,14 @@ export function MaestroGame() {
       feedback,
     };
 
+    const newLockedPositions = new Set(lockedPositions);
+    feedback.forEach((f, index) => {
+      if (f === 'green') {
+        newLockedPositions.add(index);
+      }
+    });
+    setLockedPositions(newLockedPositions);
+
     setAttempts([...attempts, newAttempt]);
     setAttemptCount(attemptCount + 1);
 
@@ -136,20 +146,25 @@ export function MaestroGame() {
     } else if (attemptCount + 1 >= MAX_ATTEMPTS) {
       setGameOver(true);
     } else {
-      // Reset for next attempt
-      setUserAnswers([null, null, null, null]);
+      const newAnswers = [...userAnswers];
+      newLockedPositions.forEach(pos => {
+        newAnswers[pos] = userAnswers[pos];
+      });
+      setUserAnswers(newAnswers);
     }
   };
 
   const handleNewGame = () => {
-    if (!key) return;
-    const newProgression = getRandomChordProgression(key.note, key.mode);
+    const newKey = getRandomKey();
+    const newProgression = getRandomChordProgression(newKey.note, newKey.mode);
+    setKey(newKey);
     setProgression(newProgression);
     setUserAnswers([null, null, null, null]);
     setAttempts([]);
     setAttemptCount(0);
     setGameOver(false);
     setIsCorrect(false);
+    setLockedPositions(new Set());
   };
 
   const getRomanNumeralOptions = () => {
@@ -203,6 +218,7 @@ export function MaestroGame() {
                   className="maestro-dropdown"
                   value={userAnswers[index] ?? ''}
                   onChange={e => handleAnswerChange(index, e.target.value ? Number(e.target.value) : null)}
+                  disabled={lockedPositions.has(index)}
                 >
                   <option value="">—</option>
                   {options.map(opt => (
