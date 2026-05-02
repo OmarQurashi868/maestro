@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import {
   getRandomKey,
@@ -84,13 +84,6 @@ export function MaestroGame() {
     });
 
     return notesWithOctaves;
-  };
-
-  const stopAudio = () => {
-    Tone.Transport.cancel();
-    if (synthRef.current) {
-      synthRef.current.triggerRelease();
-    }
   };
 
   const playScale = async () => {
@@ -281,7 +274,7 @@ export function MaestroGame() {
                       const userChord = userDegree
                         ? getChordDegreeInfo(userDegree, key.note, key.mode)
                         : null;
-                      const userLabel = userChord
+                      const userLabel = userChord && userDegree
                         ? getRomanNumeral(userDegree, userChord.isMinor, userChord.isDiminished)
                         : '—';
 
