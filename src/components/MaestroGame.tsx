@@ -207,7 +207,9 @@ export function MaestroGame() {
 
         {/* Current Answer Section */}
         {!gameOver ? (
-          <div className="maestro-answer-section">
+          <>
+            <h2 className="maestro-key-prompt">Guess the chord progression</h2>
+            <div className="maestro-answer-section">
             <p className="maestro-instruction">
               Attempt {attemptCount + 1} of {MAX_ATTEMPTS}
             </p>
@@ -237,6 +239,7 @@ export function MaestroGame() {
               Submit
             </button>
           </div>
+          </>
         ) : (
           <div className="maestro-game-over">
             <div className={`maestro-result-message ${isCorrect ? 'correct' : 'incorrect'}`}>

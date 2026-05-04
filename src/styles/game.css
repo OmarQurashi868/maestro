@@ -73,6 +73,13 @@
   transform: translateY(-2px);
 }
 
+.maestro-key-prompt {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
 .maestro-key-label {
   margin: 0 0 0.5rem;
   font-size: 0.875rem;
